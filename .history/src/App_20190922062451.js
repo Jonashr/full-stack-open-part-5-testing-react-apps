@@ -19,27 +19,12 @@ const App = () => {
       })
   }, [])
 
-  useEffect(() => { 
-    const loggedUserJSON = window.localStorage.getItem('loggedInUser')
-
-    if(loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogsService.setToken(user.token)
-    }
-  }, [])
-
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Hello')
     try {
+      console.log('try block')
       const user = await loginService.login({username, password})
-      blogsService.setToken(user.token)
-
-      window.localStorage.setItem(
-        'loggedInUser', JSON.stringify(user)
-      )
-
       console.log(user)
       setUser(user)
       setUsername('')

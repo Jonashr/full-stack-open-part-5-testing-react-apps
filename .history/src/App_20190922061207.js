@@ -19,27 +19,12 @@ const App = () => {
       })
   }, [])
 
-  useEffect(() => { 
-    const loggedUserJSON = window.localStorage.getItem('loggedInUser')
-
-    if(loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogsService.setToken(user.token)
-    }
-  }, [])
-
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Hello')
     try {
+      console.log('try block')
       const user = await loginService.login({username, password})
-      blogsService.setToken(user.token)
-
-      window.localStorage.setItem(
-        'loggedInUser', JSON.stringify(user)
-      )
-
       console.log(user)
       setUser(user)
       setUsername('')
@@ -82,18 +67,19 @@ const App = () => {
   
   if(user === null) {
     return(
-      <div>
-        <h1>Log in to application</h1>
-        {loginForm()}
-      </div>)
+    <div>
+      <h1>Log in to application</h1>
+      {loginForm()}
+    </div>)
   } else 
-    return (
-      <div>
-        <h2>Blogs</h2>
-        <h3>{user.name} is currently logged in </h3>
-        {blogs.map(blog => 
-        <Blog key={blog.id} blog={blog} />)}
-      </div>
+  
+  return (
+    <div>
+      <h2>Blogs</h2>
+      <h3>Someone is logged in... </h3>
+      {blogs.map(blog => 
+      <Blog key={blog.id} blog={blog} />)}
+    </div>
   )
 }
 

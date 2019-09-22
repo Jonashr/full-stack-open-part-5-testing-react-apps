@@ -33,8 +33,8 @@ const App = () => {
     event.preventDefault()
     console.log('Hello')
     try {
-      const user = await loginService.login({username, password})
       blogsService.setToken(user.token)
+      const user = await loginService.login({username, password})
 
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
