@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import loginService from './services/login'
 import blogsService from './services/blogs'
 import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -105,30 +106,6 @@ const handleNewBlog = async (event) => {
   
 }
 
-
-  const loginForm = () => (
-    <div>
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input 
-          type='text'
-          value={username}
-          name='Username'
-          onChange={({target}) => setUsername(target.value)} />
-      </div>
-      <div>
-        password
-        <input
-          type='password'
-          value={password}
-          name='Password'
-          onChange={({target}) => setPassword(target.value)} />
-      </div>
-      <button type='submit'>login</button>
-    </form>
- </div>)
-
  const blogForm = () => (
    <div>
      <form onSubmit={handleNewBlog}>
@@ -167,7 +144,12 @@ const handleNewBlog = async (event) => {
       <div>
         <h1>Log in to application</h1>
         <Notification notification={notification} />
-        {loginForm()}
+        <LoginForm 
+          handleLogin={handleLogin}
+          handleUsernameChange={({ target}) => setUsername(target.value)}
+          handlePasswordChange={({ target}) => setPassword(target.value)}
+          username={username}
+          password={password} />
       </div>)
   } else 
     return (
