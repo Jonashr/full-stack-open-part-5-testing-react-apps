@@ -31,6 +31,8 @@ const App = () => {
     }
   }, [])
 
+
+
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Hello')
@@ -49,6 +51,11 @@ const App = () => {
     catch(exception) {
       console.log(exception)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInUser')
+    setUser(null)
   }
 
 const handleNewBlog = async (event) => {
@@ -140,6 +147,7 @@ const handleNewBlog = async (event) => {
       <div>
         <h2>Blogs</h2>
         <h3>{user.name} is currently logged in </h3>
+        <button onClick={() => handleLogout()}>logout</button>
         {blogForm()}
         {blogs.map(blog => 
         <Blog key={blog.id} blog={blog} />)}
