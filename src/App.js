@@ -87,7 +87,6 @@ const App = () => {
 
 const handleNewBlog = async (event) => {
   event.preventDefault()
-  console.log('Handle new blog')
 
   const blog = {
     title: title,
@@ -96,13 +95,13 @@ const handleNewBlog = async (event) => {
     id: blogs.length + 1
   }
 
-  console.log(blog)
-
-  const createdBlog = await blogsService.create(blog)
-
-  console.log(createdBlog)
-   
-  setBlogs(blogs.concat(createdBlog))
+  try {
+    const createdBlog = await blogsService.create(blog)
+    setBlogs(blogs.concat(createdBlog))
+  } catch(exception) {
+      console.log('Create blog',exception)
+      notify(exception.toString(), 'error')
+  }
   
 }
 
@@ -175,8 +174,8 @@ const handleNewBlog = async (event) => {
       <div>
         <h2>Blogs</h2>
         <Notification notification={notification} />
-        <h3>
-        {user.name} is currently logged in 
+        <h3>{console.log('User:' , user)}
+        {user.data.name} is currently logged in 
         <button onClick={() => handleLogout()}>logout</button>
         </h3>
         <h2>Create a new blog</h2>

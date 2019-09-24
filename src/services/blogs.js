@@ -11,9 +11,16 @@ const create = async newObject => {
   const config = {
     headers: { Authorization: token}
   }
-
-  const response = await axios.post(baseUrl, newObject, config)
-  return response.data
+  try {
+    const response = await axios.post(baseUrl, newObject, config)
+    return response.data
+  } catch(error) {
+    if(error.response.status === 401) {
+      throw new Error('User not authorized to post new blogs.')
+    } else {
+      throw new Error(error)
+    }
+  }
 }
 
 const getAll = () => {
