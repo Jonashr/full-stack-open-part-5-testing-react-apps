@@ -3,7 +3,6 @@ import loginService from './services/login'
 import blogsService from './services/blogs'
 import Blog from './components/Blog'
 
-
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -12,6 +11,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
+  const [notification, setNotification] = useState( { message: null, type: null})
 
   useEffect(() => {
     blogsService
@@ -31,13 +31,40 @@ const App = () => {
     }
   }, [])
 
+  // This method is pretty much copy pasted from the exercise solution.
 
+  const Notification = ({notification}) => {
+    if(notification.message === null) {
+      return null
+    }
+
+    const notificationStyling = {
+      color: notification.type === 'error' ? 'red' : 'green',
+      fontStyle: 'italic',
+      fontSize: 25,
+      borderStyle: 'solid',
+      borderRadius: 5
+    }
+
+    return(
+      <div style={notificationStyling}>
+        {notification.message}
+      </div>
+    )
+  }
+
+  const notify = (message, type) => {
+    console.log('Notify me', message, type)
+    setNotification({message, type})
+    setTimeout(() => setNotification({message: null, type: null}), 3000)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Hello')
     try {
       const user = await loginService.login({username, password})
+      console.log('User', user)
       blogsService.setToken(user.token)
 
       window.localStorage.setItem(
@@ -49,7 +76,7 @@ const App = () => {
       setPassword('')
     }
     catch(exception) {
-      console.log(exception)
+      notify('Wrong password or username', 'error')
     }
   }
 
@@ -140,14 +167,19 @@ const handleNewBlog = async (event) => {
     return(
       <div>
         <h1>Log in to application</h1>
+        <Notification notification={notification} />
         {loginForm()}
       </div>)
   } else 
     return (
       <div>
         <h2>Blogs</h2>
-        <h3>{user.name} is currently logged in </h3>
+        <Notification notification={notification} />
+        <h3>
+        {user.name} is currently logged in 
         <button onClick={() => handleLogout()}>logout</button>
+        </h3>
+        <h2>Create a new blog</h2>
         {blogForm()}
         {blogs.map(blog => 
         <Blog key={blog.id} blog={blog} />)}
