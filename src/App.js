@@ -3,6 +3,7 @@ import loginService from './services/login'
 import blogsService from './services/blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -104,40 +105,7 @@ const handleNewBlog = async (event) => {
       notify(exception.toString(), 'error')
   }
   
-}
-
- const blogForm = () => (
-   <div>
-     <form onSubmit={handleNewBlog}>
-       <div>
-         title
-         <input
-          type='text'
-          value={title}
-          name='Title'
-          onChange={({ target }) => setTitle(target.value)} />
-       </div>
-       <div>
-          author
-          <input
-            type='text'
-            value={author}
-            name='Author'
-            onChange={({ target }) => setAuthor(target.value)} />
-       </div>
-       <div>
-          url
-          <input
-            type='text'
-            value={url}
-            name='Url'
-            onChange={({ target }) => setUrl(target.value)} />
-       </div>
-       <button type='submit'>create</button>
-     </form>
-   </div>)
-
-   
+  }
 
   if(user === null) {
     return(
@@ -161,7 +129,14 @@ const handleNewBlog = async (event) => {
         <button onClick={() => handleLogout()}>logout</button>
         </h3>
         <h2>Create a new blog</h2>
-        {blogForm()}
+        <BlogForm
+          handleSubmit={handleNewBlog}
+          handleTitleChange={({ target}) => setTitle(target.value)}
+          handleAuthorChange={({target}) => setAuthor(target.value)}
+          handleUrlChange={({ target}) => setUrl(target.value) }
+          title={title}
+          author={author}
+          url={url} />
         {blogs.map(blog => 
         <Blog key={blog.id} blog={blog} />)}
       </div>
