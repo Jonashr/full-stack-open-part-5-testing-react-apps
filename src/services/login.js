@@ -3,14 +3,14 @@ import axios from 'axios'
 const baseUrl = '/api/login'
 
 const login = async credentials => {
-    console.log('wtf')
-    try {
+  console.log('wtf')
+  try {
     const response =  await axios.post(baseUrl, credentials)
     return response
-    } catch(error) {
-        console.log(error)
-        throw new Error(error)
-    }
+  } catch(error) {
+    console.log(error)
+    throw new Error(error)
+  }
 }
 
 export default { login }

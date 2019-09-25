@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogsService from './services/blogs'
 import Blog from './components/Blog'
@@ -14,7 +14,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState( { message: null, type: null})
+  const [notification, setNotification] = useState( { message: null, type: null })
 
   useEffect(() => {
     blogsService
@@ -24,7 +24,7 @@ const App = () => {
       })
   }, [])
 
-  useEffect(() => { 
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
 
     if(loggedUserJSON) {
@@ -36,7 +36,7 @@ const App = () => {
 
   // This method is pretty much copy pasted from the exercise solution.
 
-  const Notification = ({notification}) => {
+  const Notification = ({ notification }) => {
     if(notification.message === null) {
       return null
     }
@@ -58,15 +58,15 @@ const App = () => {
 
   const notify = (message, type) => {
     console.log('Notify me', message, type)
-    setNotification({message, type})
-    setTimeout(() => setNotification({message: null, type: null}), 3000)
+    setNotification({ message, type })
+    setTimeout(() => setNotification({ message: null, type: null }), 3000)
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Hello')
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       console.log('User', user)
       blogsService.setToken(user.token)
 
@@ -88,24 +88,24 @@ const App = () => {
     setUser(null)
   }
 
-const handleNewBlog = async (event) => {
-  event.preventDefault()
+  const handleNewBlog = async (event) => {
+    event.preventDefault()
 
-  const blog = {
-    title: title,
-    author: author,
-    url: url,
-    id: blogs.length + 1
-  }
+    const blog = {
+      title: title,
+      author: author,
+      url: url,
+      id: blogs.length + 1
+    }
 
-  try {
-    const createdBlog = await blogsService.create(blog)
-    setBlogs(blogs.concat(createdBlog))
-  } catch(exception) {
+    try {
+      const createdBlog = await blogsService.create(blog)
+      setBlogs(blogs.concat(createdBlog))
+    } catch(exception) {
       console.log('Create blog',exception)
       notify(exception.toString(), 'error')
-  }
-  
+    }
+
   }
 
   if(user === null) {
@@ -114,38 +114,38 @@ const handleNewBlog = async (event) => {
         <h1>Log in to application</h1>
         <Notification notification={notification} />
         <Togglable buttonLabel='Login'>
-        <LoginForm 
-          handleLogin={handleLogin}
-          handleUsernameChange={({ target}) => setUsername(target.value)}
-          handlePasswordChange={({ target}) => setPassword(target.value)}
-          username={username}
-          password={password} />
+          <LoginForm
+            handleLogin={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            username={username}
+            password={password} />
         </Togglable>
       </div>)
-  } else 
+  } else
     return (
       <div>
         <h2>Blogs</h2>
         <Notification notification={notification} />
         <h3>{console.log('User:' , user)}
-        {user.data.name} is currently logged in 
-        <button onClick={() => handleLogout()}>logout</button>
+          {user.data.name} is currently logged in
+          <button onClick={() => handleLogout()}>logout</button>
         </h3>
         <h2>Create a new blog</h2>
         <Togglable buttonLabel='New form'>
           <BlogForm
             handleSubmit={handleNewBlog}
-            handleTitleChange={({ target}) => setTitle(target.value)}
-            handleAuthorChange={({target}) => setAuthor(target.value)}
-            handleUrlChange={({ target}) => setUrl(target.value) }
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value) }
             title={title}
             author={author}
             url={url} />
         </Togglable>
-        {blogs.map(blog => 
-        <Blog key={blog.id} blog={blog} />)}
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />)}
       </div>
-  )
+    )
 }
 
-export default App;
+export default App
