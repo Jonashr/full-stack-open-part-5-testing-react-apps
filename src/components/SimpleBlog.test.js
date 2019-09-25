@@ -1,7 +1,9 @@
 import React from 'react'
-import { render, cleanup } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import { prettyDOM } from '@testing-library/dom'
 import SimpleBlog from './SimpleBlog'
+
+// Write a test that verifies that if the like button of a component is pressed twice, the event handler function passed in the component's props is called twice.
 
 test('Renders content succesfully', () => {
     const simpleBlog = {
@@ -19,4 +21,24 @@ test('Renders content succesfully', () => {
     expect(component.container).toHaveTextContent('10')
 
     component.debug()
+})
+
+test('Event handler is called twice when the like button is clicked two times', () => {
+    const simpleBlog = {
+        title: 'Simple blog title',
+        author: 'Author of the blog',
+        likes: 10
+    }
+
+    const mockHandler = jest.fn()
+
+    const { getByText } = render(
+        <SimpleBlog blog={simpleBlog} onClick={mockHandler} />
+    )
+
+    const button = getByText('like')
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockHandler.mock.calls.length).toBe(2)
 })
