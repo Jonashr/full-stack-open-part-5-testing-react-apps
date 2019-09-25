@@ -4,6 +4,7 @@ import blogsService from './services/blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -112,12 +113,14 @@ const handleNewBlog = async (event) => {
       <div>
         <h1>Log in to application</h1>
         <Notification notification={notification} />
+        <Togglable buttonLabel='Login'>
         <LoginForm 
           handleLogin={handleLogin}
           handleUsernameChange={({ target}) => setUsername(target.value)}
           handlePasswordChange={({ target}) => setPassword(target.value)}
           username={username}
           password={password} />
+        </Togglable>
       </div>)
   } else 
     return (
@@ -129,14 +132,16 @@ const handleNewBlog = async (event) => {
         <button onClick={() => handleLogout()}>logout</button>
         </h3>
         <h2>Create a new blog</h2>
-        <BlogForm
-          handleSubmit={handleNewBlog}
-          handleTitleChange={({ target}) => setTitle(target.value)}
-          handleAuthorChange={({target}) => setAuthor(target.value)}
-          handleUrlChange={({ target}) => setUrl(target.value) }
-          title={title}
-          author={author}
-          url={url} />
+        <Togglable buttonLabel='New form'>
+          <BlogForm
+            handleSubmit={handleNewBlog}
+            handleTitleChange={({ target}) => setTitle(target.value)}
+            handleAuthorChange={({target}) => setAuthor(target.value)}
+            handleUrlChange={({ target}) => setUrl(target.value) }
+            title={title}
+            author={author}
+            url={url} />
+        </Togglable>
         {blogs.map(blog => 
         <Blog key={blog.id} blog={blog} />)}
       </div>
