@@ -3,7 +3,6 @@ import { render, fireEvent } from '@testing-library/react'
 import { prettyDOM } from '@testing-library/dom'
 import SimpleBlog from './SimpleBlog'
 
-// Write a test that verifies that if the like button of a component is pressed twice, the event handler function passed in the component's props is called twice.
 
 test('Renders content succesfully', () => {
     const simpleBlog = {
@@ -20,7 +19,6 @@ test('Renders content succesfully', () => {
     expect(component.container).toHaveTextContent('Author of the blog')
     expect(component.container).toHaveTextContent('10')
 
-    component.debug()
 })
 
 test('Event handler is called twice when the like button is clicked two times', () => {
