@@ -15,14 +15,16 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState( { message: null, type: null })
+  const [counter, setCounter] = useState(0)
 
   useEffect(() => {
-    blogsService
+      blogsService
       .getAll()
       .then(response => {
-        setBlogs(response)
+        setBlogs(response.sort((a, b) => a.likes - b.likes).reverse())
       })
-  }, [])
+    }
+  , [counter])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -102,9 +104,53 @@ const App = () => {
       const createdBlog = await blogsService.create(blog)
       setBlogs(blogs.concat(createdBlog))
     } catch(exception) {
-      console.log('Create blog',exception)
       notify(exception.toString(), 'error')
     }
+
+  }
+
+  const handleLikeButton = async (event) => {
+    event.preventDefault()
+    const blogId = event.target.value
+    console.log('Blogid: ', blogId)
+    const searchedBlog = blogs.find(b => b.id === blogId)
+
+    console.log('Sarched blog:', searchedBlog)
+
+    const newUpdatedBlog = {
+       user: searchedBlog.user.id,
+       likes: searchedBlog.likes + 1,
+       title: searchedBlog.title,
+       author: searchedBlog.author,
+       url: searchedBlog.url
+    }
+
+    console.log(newUpdatedBlog)
+
+    await blogsService.update(blogId, newUpdatedBlog)
+
+    setBlogs(blogs.map(blog => blog.id !== blogId ? blog : newUpdatedBlog))
+
+    setCounter(counter + 1)
+
+    console.log('After set blogs: ', blogs)
+  }
+
+  const handleDeleteButton = async (event) => {
+    event.preventDefault()
+    if(window.confirm('Delete this blog ? ')) {
+      const blogId = event.target.value
+      const newBlogList = [...blogs]
+      const searchedBlog = blogs.find(b => b.id === blogId)
+      const indexOfDeletedBlog = blogs.findIndex(b => b.id === blogId)
+      console.log(indexOfDeletedBlog)
+      console.log(newBlogList.splice(indexOfDeletedBlog, 1))
+       
+      // await blogsService.deleteBlog(blogId)
+      
+      // setBlogs(newBlogList)
+    }
+
 
   }
 
@@ -143,7 +189,7 @@ const App = () => {
             url={url} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />)}
+          <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton} />)}
       </div>
     )
 }

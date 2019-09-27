@@ -23,9 +23,21 @@ const create = async newObject => {
   }
 }
 
+const update = async (id, newObject) => {
+  console.log('new object', newObject)
+  const response = await axios.put(`${baseUrl}/${id}`, newObject)
+  console.log('response data:', response.data)
+  return response.data
+} 
+
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
 }
 
-export default { getAll, setToken, create }
+//  const deleteBlog = async id => {
+//    const request = await axios.delete(`${baseUrl}/${id}`)
+//    return response.data
+//  }
+
+export default { getAll, setToken, create, update }

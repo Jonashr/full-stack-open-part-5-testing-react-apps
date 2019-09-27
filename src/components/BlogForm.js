@@ -40,7 +40,7 @@ BlogForm.propTypes = {
   handleAuthorChange: PropTypes.func.isRequired,
   handleUrlChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  author: PropTypes.func.isRequired,
+  author: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired
 }
 
