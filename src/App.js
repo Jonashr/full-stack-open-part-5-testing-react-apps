@@ -5,24 +5,9 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-
-const useField = (type) => {
-  const [value, setValue] = useState('')
-
-  const onChange = (event) => {
-    setValue(event.target.value)
-  }
-
-  return {
-    type,
-    value,
-    onChange
-  }
-}
+import { useField } from './hooks'
 
 const App = () => {
-  // const [username2, setUsername] = useState('')
-  // const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -77,17 +62,14 @@ const App = () => {
   }
 
   const notify = (message, type) => {
-    console.log('Notify me', message, type)
     setNotification({ message, type })
     setTimeout(() => setNotification({ message: null, type: null }), 3000)
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('Hello')
     try {
       const user = await loginService.login({ username, password })
-      console.log('User', user)
       blogsService.setToken(user.token)
 
       window.localStorage.setItem(
@@ -106,6 +88,9 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser')
+    password.reset()
+    console.log('Handle logout, password has the values', password)
+    console.log('Handle logout, username', username)
     setUser(null)
   }
 
