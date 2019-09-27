@@ -8,7 +8,7 @@ const login = async credentials => {
     const response =  await axios.post(baseUrl, credentials)
     return response
   } catch(error) {
-    console.log(error)
+    console.log('Login caught exception?', error)
     throw new Error(error)
   }
 }

@@ -6,9 +6,23 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
+const useField = (type) => {
+  const [value, setValue] = useState('')
+
+  const onChange = (event) => {
+    setValue(event.target.value)
+  }
+
+  return {
+    type,
+    value,
+    onChange
+  }
+}
+
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  // const [username2, setUsername] = useState('')
+  // const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -16,6 +30,10 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState( { message: null, type: null })
   const [counter, setCounter] = useState(0)
+  const username = useField('text')
+  const password = useField('password')
+
+
 
   useEffect(() => {
       blogsService
@@ -77,10 +95,11 @@ const App = () => {
       )
 
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.value = ''
+      password.value = ''
     }
     catch(exception) {
+      console.log('Exception caught in handle login: ', exception)
       notify('Wrong password or username', 'error')
     }
   }
@@ -104,6 +123,7 @@ const App = () => {
       const createdBlog = await blogsService.create(blog)
       setBlogs(blogs.concat(createdBlog))
     } catch(exception) {
+      console.log('Exception in handle new blog', exception)
       notify(exception.toString(), 'error')
     }
 
@@ -112,10 +132,7 @@ const App = () => {
   const handleLikeButton = async (event) => {
     event.preventDefault()
     const blogId = event.target.value
-    console.log('Blogid: ', blogId)
     const searchedBlog = blogs.find(b => b.id === blogId)
-
-    console.log('Sarched blog:', searchedBlog)
 
     const newUpdatedBlog = {
        user: searchedBlog.user.id,
@@ -133,7 +150,6 @@ const App = () => {
 
     setCounter(counter + 1)
 
-    console.log('After set blogs: ', blogs)
   }
 
   const handleDeleteButton = async (event) => {
@@ -145,6 +161,8 @@ const App = () => {
       const indexOfDeletedBlog = blogs.findIndex(b => b.id === blogId)
       console.log(indexOfDeletedBlog)
       console.log(newBlogList.splice(indexOfDeletedBlog, 1))
+
+      notify('Blog was removed from the notebook')
        
       // await blogsService.deleteBlog(blogId)
       
@@ -157,13 +175,10 @@ const App = () => {
   if(user === null) {
     return(
       <div>
-        <h1>Log in to application</h1>
         <Notification notification={notification} />
         <Togglable buttonLabel='Login'>
-          <LoginForm
+          <LoginForm 
             handleLogin={handleLogin}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
             username={username}
             password={password} />
         </Togglable>
@@ -173,7 +188,7 @@ const App = () => {
       <div>
         <h2>Blogs</h2>
         <Notification notification={notification} />
-        <h3>{console.log('User:' , user)}
+        <h3>
           {user.data.name} is currently logged in
           <button onClick={() => handleLogout()}>logout</button>
         </h3>
