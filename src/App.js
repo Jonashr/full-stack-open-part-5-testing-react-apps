@@ -18,8 +18,6 @@ const App = () => {
   const username = useField('text')
   const password = useField('password')
 
-
-
   useEffect(() => {
       blogsService
       .getAll()
@@ -31,13 +29,15 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
+    console.log('Logged user JSON', loggedUserJSON)
 
     if(loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogsService.setToken(user.token)
+      console.log('User ...', user.data.token)
+      blogsService.setToken(user.data.token)
     }
-  }, [])
+  }, [counter])
 
   // This method is pretty much copy pasted from the exercise solution.
 
@@ -70,15 +70,15 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
-      blogsService.setToken(user.token)
 
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
       )
-
+      blogsService.setToken(user.token)
       setUser(user)
       username.value = ''
       password.value = ''
+      setCounter(counter + 1)
     }
     catch(exception) {
       console.log('Exception caught in handle login: ', exception)
@@ -142,16 +142,14 @@ const App = () => {
     if(window.confirm('Delete this blog ? ')) {
       const blogId = event.target.value
       const newBlogList = [...blogs]
-      const searchedBlog = blogs.find(b => b.id === blogId)
       const indexOfDeletedBlog = blogs.findIndex(b => b.id === blogId)
-      console.log(indexOfDeletedBlog)
-      console.log(newBlogList.splice(indexOfDeletedBlog, 1))
+      newBlogList.splice(indexOfDeletedBlog, 1)
 
       notify('Blog was removed from the notebook')
        
-      // await blogsService.deleteBlog(blogId)
-      
-      // setBlogs(newBlogList)
+      await blogsService.deleteItem(blogId)
+      setCounter(counter + 1)
+      setBlogs(newBlogList)
     }
 
 
@@ -189,7 +187,7 @@ const App = () => {
             url={url} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton} />)}
+          <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton} handleDeleteButton={handleDeleteButton} />)}
       </div>
     )
 }
