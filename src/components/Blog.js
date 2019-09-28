@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleLikeButton, handleDeleteButton }) => {
+const Blog = ({ blog, handleLikeButton, handleDeleteButton, user }) => {
   const blogStyle = {
     paddingTop: 5,
     paddingLeft: 2,
@@ -30,7 +30,9 @@ const Blog = ({ blog, handleLikeButton, handleDeleteButton }) => {
         {blog.user !== undefined && blog.user.name !== undefined &&
             <div>{blog.user.name}</div>
         }
+        {blog.user !== undefined && blog.user.username === user.data.username &&
         <div><button onClick={handleDeleteButton} value={blog.id}>delete</button></div>
+        }
       </div>
     </div>
   )
