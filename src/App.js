@@ -8,15 +8,16 @@ import Togglable from './components/Togglable'
 import { useField } from './hooks'
 
 const App = () => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
+  const username = useField('text')
+  const password = useField('password')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState( { message: null, type: null })
   const [counter, setCounter] = useState(0)
-  const username = useField('text')
-  const password = useField('password')
+
 
   useEffect(() => {
       blogsService
@@ -179,9 +180,6 @@ const App = () => {
         <Togglable buttonLabel='New form'>
           <BlogForm
             handleSubmit={handleNewBlog}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value) }
             title={title}
             author={author}
             url={url} />
