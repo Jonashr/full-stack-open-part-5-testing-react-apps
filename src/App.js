@@ -35,7 +35,7 @@ const App = () => {
     if(loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      console.log('User ...', user.data.token)
+      console.log('User ...', user)
       blogsService.setToken(user.data.token)
     }
   }, [counter])
