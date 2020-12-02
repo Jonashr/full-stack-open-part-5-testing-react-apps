@@ -1,10 +1,35 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import blogsService from '../services/blogs'
+import { useField} from '../hooks'
 
-const BlogForm = ({ handleSubmit, title, author, url }) => {
+const BlogForm = ({ blogs, setBlogs,  notify }) => {
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
+
+  const handleSubmitNewBlog = async (event) => {
+    event.preventDefault()
+
+    const blog = {
+      title: title.value,
+      author: author.value,
+      url: url.value
+    }
+
+    try {
+      const createdBlog = await blogsService.create(blog)
+      setBlogs(blogs.concat(createdBlog))
+      title.value = ''
+      author.value = ''
+      url.value = ''
+    } catch(error) {
+      notify(error.toString(), 'error')
+    }
+  }
+
   return(
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmitNewBlog}>
         <div>
           title
           <input {...title} />
@@ -17,13 +42,9 @@ const BlogForm = ({ handleSubmit, title, author, url }) => {
            url
           <input {...url} />
         </div>
-        <button type='submit'>create</button>
+        <button type='submit'>Create blog entry</button>
       </form>
     </div>)
-}
-
-BlogForm.propTypes = {
-  handleSubmit:PropTypes.func.isRequired
 }
 
 export default BlogForm

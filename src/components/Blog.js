@@ -1,6 +1,41 @@
 import React, { useState } from 'react'
+import blogsService from '../services/blogs'
 
-const Blog = ({ blog, handleLikeButton, handleDeleteButton, user }) => {
+const Blog = ({ blog, user, blogs, setBlogs, notify }) => {
+
+  console.log('Blog, blog')
+  
+  const handleLikeButton = async () => {
+    const blogId = blog.id
+    const searchedBlog = blogs.find(b => b.id === blogId)
+
+    const newUpdatedBlog = {
+       user: searchedBlog.user.id,
+       likes: searchedBlog.likes + 1,
+       title: searchedBlog.title,
+       author: searchedBlog.author,
+       url: searchedBlog.url
+    }
+
+    const updatedBlog = await blogsService.update(blogId, newUpdatedBlog)
+
+    setBlogs(blogs.map(b => b.id !== blogId ? b : updatedBlog))
+  }
+
+  const handleDeleteButton = async () => {
+    if(window.confirm('Delete this blog ? ')) {
+      const blogId = blog.id
+      try {        
+        await blogsService.deleteItem(blogId)
+        notify('Blog was removed from the notebook')
+        const updatedBlogList = blogs.filter(b => b.id !== blogId)
+        setBlogs(updatedBlogList)
+      } catch(error) {
+        console.log('Error occured during deletion...')
+      }
+    }
+  }
+  
   const blogStyle = {
     paddingTop: 5,
     paddingLeft: 2,
@@ -30,8 +65,10 @@ const Blog = ({ blog, handleLikeButton, handleDeleteButton, user }) => {
         {blog.user !== undefined && blog.user.name !== undefined &&
             <div>{blog.user.name}</div>
         }
-        {blog.user !== undefined && blog.user.username === user.data.username &&
-        <div><button onClick={handleDeleteButton} value={blog.id}>delete</button></div>
+        {blog.user && (blog.user.username === user.username || blog.user === user.id) && 
+        <div>
+          <button onClick={handleDeleteButton}>Delete blog</button>
+        </div>
         }
       </div>
     </div>
